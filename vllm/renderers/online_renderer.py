@@ -120,10 +120,11 @@ def _reused_prompt_token_ids(
     the key keeps the id list out of the engine's sampling metadata.
 
     Returns None when token ids alone are not enough. For example, the
-    user may want the rendered prompt back, or may have sent media for
-    the model to see. In those cases, conversation is re-rendered instead.
-    Otherwise raises VLLMValidationError if the ids are malformed or out of
-    vocabulary.
+    user may want the rendered prompt back, may have sent media for the
+    model to see, or may have no KV transfer connector without explicitly
+    enabling direct token-id reuse. In those cases, messages are rendered
+    instead. Otherwise raises VLLMValidationError if the ids are malformed
+    or out of vocabulary.
     """
     kv = getattr(request, "kv_transfer_params", None)
     if not isinstance(kv, dict):
@@ -149,6 +150,17 @@ def _reused_prompt_token_ids(
             "messages have non-text content and are rendered instead."
         )
         return None
+    # The reuse contract is disaggregated serving, where the decode side runs
+    # with a KV transfer connector. Without one the forwarded ids would
+    # replace the rendered messages outright, skipping the chat template,
+    # truncate_prompt_tokens, and tokenization on any client-supplied text.
+    if getattr(renderer.config, "kv_transfer_config", None) is None:
+        raise VLLMValidationError(
+            "`kv_transfer_params['prompt_token_ids']` is only honored when the "
+            "server runs a KV transfer connector (`--kv-transfer-config`); "
+            "without one the forwarded ids would replace the rendered prompt.",
+            parameter="kv_transfer_params.prompt_token_ids",
+        )
     # bool is an int subclass, hence the exact type check.
     if (
         not isinstance(ids, list)
