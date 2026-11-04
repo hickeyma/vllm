@@ -473,6 +473,7 @@ class EngineArgs:
     runner: RunnerOption = ModelConfig.runner
     convert: ConvertOption = ModelConfig.convert
     skip_tokenizer_init: bool = ModelConfig.skip_tokenizer_init
+    enable_prompt_token_ids: bool = ModelConfig.enable_prompt_token_ids
     enable_prompt_embeds: bool = ModelConfig.enable_prompt_embeds
     tokenizer_mode: TokenizerMode | str = ModelConfig.tokenizer_mode
     trust_remote_code: bool = ModelConfig.trust_remote_code
@@ -1005,6 +1006,9 @@ class EngineArgs:
         )
         model_group.add_argument(
             "--skip-tokenizer-init", **model_kwargs["skip_tokenizer_init"]
+        )
+        model_group.add_argument(
+            "--enable-prompt-token-ids", **model_kwargs["enable_prompt_token_ids"]
         )
         model_group.add_argument(
             "--enable-prompt-embeds", **model_kwargs["enable_prompt_embeds"]
@@ -2029,6 +2033,7 @@ class EngineArgs:
             enable_trace_replay=self.enable_trace_replay,
             disable_sliding_window=self.disable_sliding_window,
             skip_tokenizer_init=self.skip_tokenizer_init,
+            enable_prompt_token_ids=self.enable_prompt_token_ids,
             enable_prompt_embeds=self.enable_prompt_embeds,
             served_model_name=self.served_model_name,
             language_model_only=self.language_model_only,
