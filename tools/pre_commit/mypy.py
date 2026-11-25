@@ -35,6 +35,7 @@ SILENT_GROUPS = [
     "tests/cuda",
     "tests/detokenizer",
     "tests/device_allocator",
+    "tests/distributed",
     "tests/engine",
     "tests/entrypoints/anthropic",
     "tests/entrypoints/cli",
@@ -58,6 +59,7 @@ SILENT_GROUPS = [
     "tests/jit_monitor",
     "tests/kernels",
     "tests/lora",
+    "tests/models",
     "tests/model_executor",
     "tests/models/deepseek_v32",
     "tests/models/deepseek_v41",
@@ -99,6 +101,7 @@ SILENT_GROUPS = [
     "tests/tracing",
     "tests/transformers_utils",
     "tests/utils_",
+    "tests/v1",
     "tests/v1/attention",
     "tests/v1/core",
     "tests/v1/cudagraph",
@@ -127,9 +130,6 @@ SILENT_GROUPS = [
 # from "skip" to "silent", move its directory to SILENT_GROUPS.
 SEPARATE_GROUPS = [
     "tests",
-    "tests/distributed",
-    "tests/models",
-    "tests/v1",
 ]
 
 
